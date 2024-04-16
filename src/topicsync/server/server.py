@@ -10,19 +10,13 @@ from websockets.server import WebSocketServerProtocol
 from websockets.exceptions import ConnectionClosed
 from topicsync.state_machine import state_machine
 
-from topicsync.server.client_manager import ClientManager, Client, ClientCommProtocol, ConnectionClosedException, \
-    ClientCommFactory
+from topicsync.server.client_manager import ClientManager, Client, ClientCommProtocol, ConnectionClosedException
 from topicsync.service import Service
 from topicsync.state_machine.state_machine import ALREADY_LOGGED_ERROR_NOTE, StateMachine, Transition
 from topicsync.topic import DictTopic, EventTopic, Topic, SetTopic
 from topicsync.change import Change
 
 from topicsync_debugger import Debugger
-
-
-class ClientServer(Protocol):
-    async def serve(self, handle_client: Callable[[ClientCommFactory], Awaitable[ClientCommProtocol]]):
-        pass
 
 
 class TopicsyncServer:

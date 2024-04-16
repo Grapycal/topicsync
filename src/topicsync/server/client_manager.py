@@ -59,7 +59,6 @@ class Client:
     def messages(self) -> AsyncIterator[str]:
         return self._comm.messages()
 
-ClientCommFactory = Callable[[], ClientCommProtocol]
 class ClientManager:
     def __init__(self,state_machine:StateMachine) -> None:
         self._state_machine = state_machine
