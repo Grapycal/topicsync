@@ -82,7 +82,7 @@ class Topic(metaclass = abc.ABCMeta):
         The message that is sent to a client in a 'init' command when it subscribes to the topic.
         In client, it is deserialized as a SetChange.
         '''
-        return {"topic_name": self.get_name(), "value": self.get()}
+        return {"value": self.get()}
     
     def add_validator(self,validator:Callable[[Any,Change],bool]):
         '''

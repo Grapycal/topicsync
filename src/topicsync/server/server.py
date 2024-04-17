@@ -69,7 +69,7 @@ class TopicsyncServer:
     """
 
     def _changes_callback(self, changes:List[Change],actionID:str):
-        self._client_manager.send_update_or_buffer(changes,actionID)
+        self._client_manager.send_update_buffered(changes,actionID)
 
     def _add_topic_raw(self,topic_name,props):
         if props.get('is_restore',False):

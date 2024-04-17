@@ -123,7 +123,7 @@ class ClientManager:
             logger.error(f"Error handling client {client_id}:\n{traceback.format_exc()}")
             self._cleanup_client(client)
 
-    def send_update_or_buffer(self,changes:List[Change],action_id:str):
+    def send_update_buffered(self,changes:List[Change],action_id:str):
         self._update_buffer.add_changes(changes,action_id)
 
     def send_update(self,changes:List[Change],action_id:str):
@@ -147,19 +147,24 @@ class ClientManager:
             self._subscriptions[topic].discard(client.id)
         self.on_client_disconnect.invoke(client.id)
 
-    def _handle_subscribe(self,sender:Client,topic_name:str):
-        if not self._state_machine.has_topic(topic_name):
-            # This happens when a removal message of the topic is not yet arrived at the client
-            #? Should we send a message to the client?
-            #logger.warning(f"Client {sender.id} tried to subscribe to non-existing topic {topic_name}")
-            return
-        
+    def _handle_subscribe(self,sender:Client,topic_names:List[str]):
         self._update_buffer.flush() # clear the buffer before sending `init` so the client starts at a correct state
 
-        self._subscriptions[topic_name].add(sender.id)
-        logger.debug(f"Client {sender.id} subscribed to {topic_name}")
-        msg = self._state_machine.get_topic(topic_name).get_init_message()
-        self.send(sender,"init",**msg)
+        content = {}
+
+        for topic_name in topic_names:
+            if not self._state_machine.has_topic(topic_name):
+                # This happens when a removal message of the topic is not yet arrived at the client
+                #? Should we send a message to the client?
+                #logger.warning(f"Client {sender.id} tried to subscribe to non-existing topic {topic_name}")
+                continue
+
+            self._subscriptions[topic_name].add(sender.id)
+            logger.debug(f"Client {sender.id} subscribed to {topic_name}")
+            msg = self._state_machine.get_topic(topic_name).get_init_message()
+            content[topic_name] = msg
+
+        self.send(sender,"init",content = content)
 
     def _handle_unsubscribe(self,sender:Client,topic_name:str):
         self._subscriptions[topic_name].discard(sender.id)
