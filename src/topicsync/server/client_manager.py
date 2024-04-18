@@ -152,17 +152,18 @@ class ClientManager:
 
         content = {}
 
-        for topic_name in topic_names:
-            if not self._state_machine.has_topic(topic_name):
-                # This happens when a removal message of the topic is not yet arrived at the client
-                #? Should we send a message to the client?
-                #logger.warning(f"Client {sender.id} tried to subscribe to non-existing topic {topic_name}")
-                continue
+        with self._state_machine.lock:
+            for topic_name in topic_names:
+                if not self._state_machine.has_topic(topic_name):
+                    # This happens when a removal message of the topic is not yet arrived at the client
+                    #? Should we send a message to the client?
+                    #logger.warning(f"Client {sender.id} tried to subscribe to non-existing topic {topic_name}")
+                    continue
 
-            self._subscriptions[topic_name].add(sender.id)
-            logger.debug(f"Client {sender.id} subscribed to {topic_name}")
-            msg = self._state_machine.get_topic(topic_name).get_init_message()
-            content[topic_name] = msg
+                self._subscriptions[topic_name].add(sender.id)
+                logger.debug(f"Client {sender.id} subscribed to {topic_name}")
+                msg = self._state_machine.get_topic(topic_name).get_init_message()
+                content[topic_name] = msg
 
         self.send(sender,"init",content = content)
 

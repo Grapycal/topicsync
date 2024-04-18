@@ -69,6 +69,10 @@ class StateMachine:
         self._max_recursive_depth = 1e4
         self._transition_tree = None
         self._tasks_to_run_after_transition: List[Callable[[],None]] = []
+
+    @property
+    def lock(self):
+        return self._lock
     
     T = TypeVar('T', bound=Topic)
     def add_topic(self,name:str,topic_type:type[T],is_stateful:bool = True,init_value:Any=None)->T:
