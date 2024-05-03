@@ -27,7 +27,7 @@ maintainers = [
 
 packages = [
     { include = "topicsync", from = "src" },
-    { include = "topicsync_debugger", from = "src" },
+    # { include = "topicsync_debugger", from = "src" },
 ]
 
 [tool.poetry.dependencies]
