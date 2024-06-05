@@ -19,7 +19,11 @@ from topicsync.change import Change
 
 
 def make_message(message_type, **kwargs) -> str:
-    return json.dumps({"type": message_type, "args": kwargs})
+    try:
+        return json.dumps({"type": message_type, "args": kwargs})
+    except Exception as e:
+        logger.error(f"Error encoding message {str(kwargs)[:300]}")
+        raise ValueError(f"Error encoding message {message_type}: {e}") from e
 
 
 def parse_message(message_json) -> Tuple[str, dict]:

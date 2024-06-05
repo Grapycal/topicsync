@@ -258,7 +258,7 @@ class TopicsyncServer:
 
     def _add_topic_to_list(self, topic_name: str, type: type[T], value) -> Topic:
         if self._state_machine.has_topic(topic_name):
-            raise Exception(f"Topic {topic_name} already exists")
+            raise KeyError(f"Topic {topic_name} already exists")
         self._topic_list.add(topic_name, value)
         logger.debug(f"Added topic {topic_name}")
         new_topic = self.topic(topic_name, type)
@@ -266,7 +266,7 @@ class TopicsyncServer:
 
     def remove_topic(self, topic_name):
         if not self._state_machine.has_topic(topic_name):
-            raise Exception(f"Topic {topic_name} does not exist")
+            raise KeyError(f"Topic {topic_name} does not exist")
         topic = self.topic(topic_name, Topic)
         with self._state_machine.record(allow_reentry=True):
             temp = self._topic_list[topic_name]
