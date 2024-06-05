@@ -176,7 +176,8 @@ class ClientManager:
         self._message_handlers[message_type] = handler
 
     def _cleanup_client(self, client: Client):
-        del self._clients[client.id]
+        if client.id in self._clients:
+            del self._clients[client.id]
         for topic in self._subscriptions:
             self._subscriptions[topic].discard(client.id)
         self.on_client_disconnect.invoke(client.id)
