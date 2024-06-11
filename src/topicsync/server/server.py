@@ -121,7 +121,7 @@ class TopicsyncServer:
         except Exception as e:
             sender.send("reject", reason=repr(e))
             tb = traceback.format_exc()
-            if ALREADY_LOGGED_ERROR_NOTE not in e.__notes__:
+            if hasattr(e, "__notes__") and ALREADY_LOGGED_ERROR_NOTE not in e.__notes__:
                 logger.warning(
                     f"Error when handling action {action_id} from client {sender.id}:\n{tb}"
                 )
