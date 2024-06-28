@@ -74,6 +74,7 @@ class StateMachine:
         self._debug = (
             changes_tree_callback is not None or transition_tree_callback is not None
         )
+        # ===CHECK_LICENSE=== #
 
         self._max_recursive_depth = 1e4
         self._transition_tree = None
