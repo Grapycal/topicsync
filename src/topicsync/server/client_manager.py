@@ -184,6 +184,15 @@ class ClientManager:
             del self._clients[client.id]
         for topic in self._subscriptions:
             self._subscriptions[topic].discard(client.id)
+        # clear sending queue with messages for this client
+        items_for_other_clients = []
+        while not self._sending_queue.empty():
+            client, args, kwargs = self._sending_queue.get_nowait()
+            if client.id != client.id:
+                items_for_other_clients.append((client, args, kwargs))
+        for item in items_for_other_clients:
+            self._sending_queue.put_nowait(item)
+
         self.on_client_disconnect.invoke(client.id)
 
     def _handle_subscribe(self, sender: Client, topic_names: List[str]):
