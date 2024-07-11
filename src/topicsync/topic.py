@@ -778,6 +778,8 @@ class EventTopic(Topic):
                         merge_dicts_in_place(change.forward_info, returns[0])
 
 
+BoolTopic = GenericTopic[bool]
+
 all_topic_types = {
     "generic": GenericTopic,
     "string": StringTopic,
