@@ -460,6 +460,8 @@ class FloatTopic(Topic):
     def set(self, value: float):
         if value == self._value:
             return
+        if isinstance(value, int):
+            value = float(value)
         change = FloatChangeTypes.SetChange(self._name, value)
         self.apply_change_external(change)
 
